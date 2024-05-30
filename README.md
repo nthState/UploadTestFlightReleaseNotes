@@ -38,3 +38,33 @@ jobs:
 docker build . -t githubactiontest -f Dockerfile
 docker run -e ISSUER_ID=a -e KEY_ID=a -e AUTH_KEY=a -e APP_ID=a -e WHATS_NEW=a -e BUILD_NUMBER=a -d githubactiontest
 ```
+
+
+### Build
+
+Generating the requirements.txt
+
+Create a virtual env
+
+```bash
+cd /tmp
+mkdir api_venv 
+cd api_venv/                                             
+python3.10 -m venv venv
+cd venv/bin
+source activate
+```
+
+Then install the libraries
+```bash
+pip3 install cryptography                                
+pip3 install requests
+pip3 install pyjwt
+pip3 install markdown
+pip3 install beautifulsoup4
+```
+
+Export the requirements
+```bash
+pip3 freeze > requirements.txt 
+```
