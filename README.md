@@ -36,5 +36,5 @@ jobs:
 
 ```bash
 docker build . -t githubactiontest -f Dockerfile
-docker run -d githubactiontest
+docker run -e ISSUER_ID=a -e KEY_ID=a -e AUTH_KEY=a -e APP_ID=a -e WHATS_NEW=a -e BUILD_NUMBER=a -d githubactiontest
 ```
