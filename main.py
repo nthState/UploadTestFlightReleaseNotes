@@ -15,18 +15,14 @@ class UploadTestFlightReleaseNotes:
 		exp = unix_timestamp_plus_5_min = unix_timestamp + (10 * 60)  # 10 min * 60 seconds (tokens over 20 minutes are not allowed)
 		iss = unix_timestamp_plus_5_min = unix_timestamp + (-1 * 60)  # -1 min * 60 seconds
 		
-		ISSUER_ID = sys.argv[1]		
-		KEY_ID = sys.argv[2]
-		AUTH_KEY = sys.argv[3]
-		
 		data = {'aud': 'appstoreconnect-v1',
-				'iss': ISSUER_ID,
+				'iss': issuer_id,
 				'exp': exp,
 				'iat': iss}
 				
-		headers = {'kid': KEY_ID}
+		headers = {'kid': key_id}
 		
-		encoded_token = jwt.encode(data, AUTH_KEY, algorithm='ES256', headers=headers)
+		encoded_token = jwt.encode(data, auth_key, algorithm='ES256', headers=headers)
 		
 		return encoded_token
 		

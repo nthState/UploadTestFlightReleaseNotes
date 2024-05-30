@@ -29,3 +29,12 @@ jobs:
           BUILD_NUMBER: the build number you want to change
 
 ```
+
+## Testing
+
+### Docker
+
+```bash
+docker build . -t githubactiontest -f Dockerfile
+docker run -d githubactiontest
+```
