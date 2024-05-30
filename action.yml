@@ -1,0 +1,28 @@
+name: 'Upload TestFlight Release Notes'
+description: 'A GitHub Action to upload testFlight Release Notes for a particular build number'
+inputs:
+  ISSUER_ID:
+    description: 'Issuer Id from AppStore Connect'
+    required: true
+  KEY_ID:
+    description: 'Key ID from AppStore Connect'
+    required: true
+  AUTH_KEY:
+    description: 'Auth Key from AppStore Connect'
+    required: true
+  APP_ID:
+    description: 'App ID from AppStore Connect'
+    required: true
+  WHATS_NEW:
+    description: 'The text you want to set on the build'
+    required: true
+  BUILD_NUMBER:
+    description: 'The build number to target'
+    required: true
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+branding:
+  icon: 'mic'
+  color: 'blue'
