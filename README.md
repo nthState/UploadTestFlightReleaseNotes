@@ -60,8 +60,6 @@ Then install the libraries
 pip3 install cryptography                                
 pip3 install requests
 pip3 install pyjwt
-pip3 install markdown
-pip3 install beautifulsoup4
 ```
 
 Export the requirements
