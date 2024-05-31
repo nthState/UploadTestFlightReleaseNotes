@@ -18,12 +18,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       
-      - name: Run custom action
+      - name: Upload Release Notes to TestFlight
         uses: nthState/UploadTestFlightReleaseNotes
         with:
           ISSUER_ID: ${{ secrets.APPCONNECT_API_ISSUER }}
           KEY_ID: ${{ secrets.APPCONNECT_API_KEY_ID }}
-          AUTH_KEY: ${{ secrets.APPCONNECT_API_KEY_PRIVATE }}
+          PRIVATE_KEY: ${{ secrets.APPCONNECT_API_KEY_PRIVATE }}
           APP_ID: id of the app
           WHATS_NEW: "detail item that has changed"
           BUILD_NUMBER: the build number you want to change
@@ -34,9 +34,23 @@ jobs:
 
 ### Docker
 
+Build the docker
+
 ```bash
 docker build . -t githubactiontest -f Dockerfile
-docker run -e ISSUER_ID=a -e KEY_ID=a -e AUTH_KEY=a -e APP_ID=a -e WHATS_NEW=a -e BUILD_NUMBER=a -d githubactiontest
+```
+
+Run the docker
+
+```bash
+docker run \
+-e ISSUER_ID=appstore connect api issuer id \
+-e KEY_ID=appstore connect api key id \
+-e PRIVATE_KEY=appstore connect api private key  \
+-e APP_ID=app id \
+-e WHATS_NEW="Your update text, max 4000 chars" \
+-e BUILD_NUMBER= your build number \
+-d githubactiontest
 ```
 
 

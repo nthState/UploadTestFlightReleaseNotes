@@ -7,7 +7,7 @@ import requests
 		
 class UploadTestFlightReleaseNotes:
 
-	def generateToken(self, issuer_id, key_id, auth_key):
+	def generateToken(self, issuer_id, key_id, private_key):
 		
 		current_time = datetime.datetime.now(datetime.timezone.utc)
 		unix_timestamp = current_time.timestamp()
@@ -22,7 +22,7 @@ class UploadTestFlightReleaseNotes:
 				
 		headers = {'kid': key_id}
 		
-		encoded_token = jwt.encode(data, auth_key, algorithm='ES256', headers=headers)
+		encoded_token = jwt.encode(data, private_key, algorithm='ES256', headers=headers)
 		
 		return encoded_token
 		
@@ -79,14 +79,14 @@ def main():
 
 	issuer_id = os.getenv('ISSUER_ID')
 	key_id = os.getenv('KEY_ID')
-	auth_key = os.getenv('AUTH_KEY')
+	private_key = os.getenv('PRIVATE_KEY')
 	
 	app_id = os.getenv('APP_ID')
 	whats_new = os.getenv('WHATS_NEW')
 	build_number = os.getenv('BUILD_NUMBER')
 	
 	service = UploadTestFlightReleaseNotes()
-	token = service.generateToken(issuer_id, key_id, auth_key)
+	token = service.generateToken(issuer_id, key_id, private_key)
 	reason = service.uploadNotes(app_id, token, whats_new, build_number)
 	
 	print(reason)

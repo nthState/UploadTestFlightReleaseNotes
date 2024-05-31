@@ -7,8 +7,8 @@ inputs:
   KEY_ID:
     description: 'Key ID from AppStore Connect'
     required: true
-  AUTH_KEY:
-    description: 'Auth Key from AppStore Connect'
+  PRIVATE_KEY:
+    description: 'Private Key from AppStore Connect'
     required: true
   APP_ID:
     description: 'App ID from AppStore Connect'
