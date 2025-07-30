@@ -35,12 +35,15 @@ runs:
     - name: Setup virtual environment
       shell: bash
       run: |
+        echo "Current directory: $(pwd)"
         mkdir -p ${{ github.workspace }}/api_venv
         cd ${{ github.workspace }}/api_venv
         python3 -m venv venv
         source venv/bin/activate
-        pip install -r ${{ github.workspace }}/requirements.txt
-        python3 ${{ github.workspace }}/main.py
+        pip3 install cryptography                                
+        pip3 install requests
+        pip3 install pyjwt
+        python3 ./main.py
 
 #     - name: Install dependencies
 #       shell: bash
