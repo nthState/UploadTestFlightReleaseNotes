@@ -4,6 +4,8 @@
 
 This GitHub Action allows you to upload Release Notes to a particular build on TestFlight
 
+Requires: python3
+
 ## Example
 
 ```yml
@@ -39,7 +41,7 @@ export PRIVATE_KEY=appstore connect api private key  \
 export APP_ID=app id \
 export WHATS_NEW="Your update text, max 4000 chars" \
 export BUILD_NUMBER= your build number \
-python ./main.py
+python3 ./main.py
 ```
 
 
