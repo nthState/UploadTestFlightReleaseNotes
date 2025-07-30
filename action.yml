@@ -38,7 +38,7 @@ runs:
         pip3 install cryptography                                
         pip3 install requests
         pip3 install pyjwt
-        python3 ./main.py
+        python3 ../../main.py
 
 branding:
   icon: 'mic'
