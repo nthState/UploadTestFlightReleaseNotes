@@ -1,0 +1,14 @@
+
+## Virtual env
+api_venv
+
+# Mac OS X
+*.DS_Store
+
+*.pyc
+__pycache__
+
+# Packages
+*.egg-info
+
+requirements.txt
