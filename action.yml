@@ -37,7 +37,7 @@ runs:
       run: |
         mkdir -p ${{ github.workspace }}/api_venv
         cd ${{ github.workspace }}/api_venv
-        python3.10 -m venv venv
+        python3 -m venv venv
         source venv/bin/activate
         pip install -r ${{ github.workspace }}/requirements.txt
         python3 ${{ github.workspace }}/main.py
