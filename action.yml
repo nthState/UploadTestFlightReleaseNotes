@@ -1,5 +1,6 @@
 name: 'Upload TestFlight Release Notes'
-description: 'A GitHub Action to upload testFlight Release Notes for a particular build number'
+description: 'A GitHub Action to upload TestFlight Release Notes for a particular build number'
+
 inputs:
   ISSUER_ID:
     description: 'Issuer Id from AppStore Connect'
@@ -21,8 +22,25 @@ inputs:
     required: true
 
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: 'composite'  # Use composite action to avoid Docker
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run TestFlight Upload Script
+      run: |
+        python ./main.py
+
 branding:
   icon: 'mic'
   color: 'blue'

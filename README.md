@@ -13,13 +13,13 @@ on: [push]
 
 jobs:
   example_job:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       
       - name: Upload Release Notes to TestFlight
-        uses: nthState/UploadTestFlightReleaseNotes
+        uses: nthState/UploadTestFlightReleaseNotes@v2.0.0
         with:
           ISSUER_ID: ${{ secrets.APPCONNECT_API_ISSUER }}
           KEY_ID: ${{ secrets.APPCONNECT_API_KEY_ID }}
@@ -32,25 +32,14 @@ jobs:
 
 ## Testing
 
-### Docker
-
-Build the docker
-
 ```bash
-docker build . -t githubactiontest -f Dockerfile
-```
-
-Run the docker
-
-```bash
-docker run \
--e ISSUER_ID=appstore connect api issuer id \
--e KEY_ID=appstore connect api key id \
--e PRIVATE_KEY=appstore connect api private key  \
--e APP_ID=app id \
--e WHATS_NEW="Your update text, max 4000 chars" \
--e BUILD_NUMBER= your build number \
--d githubactiontest
+export ISSUER_ID=appstore connect api issuer id \
+export KEY_ID=appstore connect api key id \
+export PRIVATE_KEY=appstore connect api private key  \
+export APP_ID=app id \
+export WHATS_NEW="Your update text, max 4000 chars" \
+export BUILD_NUMBER= your build number \
+python ./main.py
 ```
 
 

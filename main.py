@@ -84,7 +84,7 @@ def main():
 	app_id = os.getenv('APP_ID')
 	whats_new = os.getenv('WHATS_NEW')
 	build_number = os.getenv('BUILD_NUMBER')
-	
+
 	service = UploadTestFlightReleaseNotes()
 	token = service.generateToken(issuer_id, key_id, private_key)
 	reason = service.uploadNotes(app_id, token, whats_new, build_number)
