@@ -41,9 +41,7 @@ runs:
         cd api_venv
         python3 -m venv venv
         source venv/bin/activate
-        pip3 install cryptography                                
-        pip3 install requests
-        pip3 install pyjwt
+        pip3 install --no-cache-dir -r ${{github.action_path}}/requirements.txt
         python3 ${{github.action_path}}/main.py
 
 branding:
