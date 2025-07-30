@@ -1,5 +1,6 @@
 name: 'Upload TestFlight Release Notes'
-description: 'A GitHub Action to upload testFlight Release Notes for a particular build number'
+description: 'A GitHub Action to upload TestFlight Release Notes for a particular build number'
+
 inputs:
   ISSUER_ID:
     description: 'Issuer Id from AppStore Connect'
@@ -21,8 +22,28 @@ inputs:
     required: true
 
 runs:
-  using: 'docker'
-  image: 'Dockerfile'
+  using: 'composite'
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup virtual environment
+      shell: bash
+      env:
+        ISSUER_ID: ${{ inputs.ISSUER_ID }}
+        KEY_ID: ${{ inputs.KEY_ID }}
+        PRIVATE_KEY: ${{ inputs.PRIVATE_KEY }}
+        APP_ID: ${{ inputs.APP_ID }}
+        WHATS_NEW: ${{ inputs.WHATS_NEW }}
+        BUILD_NUMBER: ${{ inputs.BUILD_NUMBER }}
+      run: |
+        mkdir -p api_venv
+        cd api_venv
+        python3 -m venv venv
+        source venv/bin/activate
+        pip3 install --no-cache-dir -r ${{github.action_path}}/requirements.txt
+        python3 ${{github.action_path}}/main.py
+
 branding:
   icon: 'mic'
   color: 'blue'
