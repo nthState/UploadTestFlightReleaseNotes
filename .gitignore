@@ -10,5 +10,3 @@ __pycache__
 
 # Packages
 *.egg-info
-
-requirements.txt
