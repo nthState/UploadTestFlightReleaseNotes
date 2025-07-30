@@ -29,9 +29,14 @@ runs:
 
     - name: Setup virtual environment
       shell: bash
+      env:
+        ISSUER_ID: ${{ inputs.ISSUER_ID }}
+        KEY_ID: ${{ inputs.KEY_ID }}
+        PRIVATE_KEY: ${{ inputs.PRIVATE_KEY }}
+        APP_ID: ${{ inputs.APP_ID }}
+        WHATS_NEW: ${{ inputs.WHATS_NEW }}
+        BUILD_NUMBER: ${{ inputs.BUILD_NUMBER }}
       run: |
-        echo "Current directory: $(pwd)"
-        echo "Action directory: ${{github.action_path}}"
         mkdir -p api_venv
         cd api_venv
         python3 -m venv venv
