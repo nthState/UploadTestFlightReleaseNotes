@@ -35,12 +35,17 @@ runs:
     - name: Setup virtual environment
       shell: bash
       run: |
-        mkdir -p ${{ github.workspace }}/api_venv
-        cd ${{ github.workspace }}/api_venv
-        python3.10 -m venv venv
-        source venv/bin/activate
-        pip install -r ${{ github.workspace }}/requirements.txt
-        python ${{ github.workspace }}/main.py
+        echo "Current directory: $(pwd)"
+        # Create a temporary virtual environment directory
+        VENV_DIR=$(mktemp -d)
+        
+        # Create and activate the virtual environment
+        python3.10 -m venv "$VENV_DIR/venv"
+        source "$VENV_DIR/venv/bin/activate"
+        
+        # Install requirements and run the script
+        pip install -r "${{ github.workspace }}/requirements.txt"
+        python "${{ github.workspace }}/main.py"
 
 #     - name: Install dependencies
 #       shell: bash
