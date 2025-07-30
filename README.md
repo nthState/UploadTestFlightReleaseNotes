@@ -35,12 +35,12 @@ jobs:
 ## Testing
 
 ```bash
-export ISSUER_ID=appstore connect api issuer id \
-export KEY_ID=appstore connect api key id \
-export PRIVATE_KEY=appstore connect api private key  \
-export APP_ID=app id \
-export WHATS_NEW="Your update text, max 4000 chars" \
-export BUILD_NUMBER= your build number \
+export ISSUER_ID=appstore connect api issuer id
+export KEY_ID=appstore connect api key id
+export PRIVATE_KEY=appstore connect api private key
+export APP_ID=app id
+export WHATS_NEW="Your update text, max 4000 chars"
+export BUILD_NUMBER= your build number
 python3 ./main.py
 ```
 

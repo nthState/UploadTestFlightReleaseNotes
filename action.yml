@@ -31,6 +31,7 @@ runs:
       shell: bash
       run: |
         echo "Current directory: $(pwd)"
+        echo "Action directory: ${{github.action_path}}"
         mkdir -p api_venv
         cd api_venv
         python3 -m venv venv
@@ -38,7 +39,7 @@ runs:
         pip3 install cryptography                                
         pip3 install requests
         pip3 install pyjwt
-        python3 ../../main.py
+        python3 ${{github.action_path}}/main.py
 
 branding:
   icon: 'mic'
