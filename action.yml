@@ -35,14 +35,12 @@ runs:
     - name: Setup virtual environment
       shell: bash
       run: |
-        cd /tmp
-        mkdir api_venv 
-        cd api_venv/                                             
+        mkdir -p ${{ github.workspace }}/api_venv
+        cd ${{ github.workspace }}/api_venv
         python3.10 -m venv venv
-        cd venv/bin
-        source activate
-        pip install -r ../../requirements.txt
-        python ../../main.py
+        source venv/bin/activate
+        pip install -r ${{ github.workspace }}/requirements.txt
+        python ${{ github.workspace }}/main.py
 
 #     - name: Install dependencies
 #       shell: bash
