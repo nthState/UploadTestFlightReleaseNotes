@@ -27,19 +27,15 @@ class UploadTestFlightReleaseNotes:
 		return encoded_token
 		
 	def filter_builds_for_platform(self, build):
-		#print(f"Check {self.platform} for {build}")
 		computedMinMacOsVersion = build['attributes']['computedMinMacOsVersion']
 		minOsVersion = build['attributes']['minOsVersion']
 		computedMinVisionOsVersion = build['attributes']['computedMinVisionOsVersion']
 		# print(f"computedMinMacOsVersion: {computedMinMacOsVersion}")
-# 		print(f"minOsVersion: {minOsVersion}")
-# 		print(f"computedMinVisionOsVersion: {computedMinVisionOsVersion}")
-# 		print(f"self.platform: {self.platform}")
+		# print(f"minOsVersion: {minOsVersion}")
+		# print(f"computedMinVisionOsVersion: {computedMinVisionOsVersion}")
 		if self.platform == 'visionos' and computedMinVisionOsVersion == None:
-			#print("visionos")
 			return True
 		if self.platform == 'ios' and computedMinVisionOsVersion != None:
-			#print("ios")
 			return True
 
 		return False
@@ -55,7 +51,8 @@ class UploadTestFlightReleaseNotes:
 		
 		# Find builds
 		versionId = ""
-		while versionId == "":
+		versionIdCounter = 0
+		while versionId == "" and versionIdCounter < 100:
 		
 			print("---Finding Build---")
 			URL = BASE_URL + 'builds?filter[app]=' + app_id + '&filter[version]=' + build_number
@@ -63,21 +60,22 @@ class UploadTestFlightReleaseNotes:
 			try:
 				
 				data = r.json()['data']
-				#print(f"data len: {len(data)}")
 				data = list(filter(self.filter_builds_for_platform, data))
-				#print(f"data len filtered: {len(data)}")
 				
-				versionId = data[0]['id']
-					
-				print(f"found versionId: {versionId}")
+				if len(data) > 0:
+					versionId = data[0]['id']
+					print(f"found versionId: {versionId}")
 					
 			except Exception as e:
 				print(f"Error: {e}")
 				time.sleep(60) #wait for 60 seconds
+				
+			versionIdCounter += 1
 		
 		# Find localizations
 		localizationId = ""
-		while localizationId == "":
+		localizationIdCounter = 0
+		while localizationId == "" and localizationIdCounter < 100:
 		
 			print("---Finding Localizations---")
 			URL = BASE_URL + 'builds/' + versionId + '/betaBuildLocalizations'
@@ -87,7 +85,8 @@ class UploadTestFlightReleaseNotes:
 			except Exception as e:
 				print(f"Error: {e}")
 				time.sleep(60) #wait for 60 seconds
-		
+				
+			localizationIdCounter += 1
 		
 		print("---Update What's New---")
 		URL = BASE_URL + 'betaBuildLocalizations/' + localizationId
