@@ -21,7 +21,7 @@ inputs:
     description: 'The build number to target'
     required: true
   PLATFORM:
-    description: 'The platform to target, ios/visionos/macos'
+    description: 'The platform to target, IOS, MAC_OS, TV_OS, VISION_OS'
     required: false
 
 runs:

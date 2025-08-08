@@ -29,7 +29,7 @@ jobs:
           APP_ID: id of the app
           WHATS_NEW: "detail item that has changed"
           BUILD_NUMBER: the build number you want to change
-          PLATFORM: the platform to target, ios/visionos/macos
+          PLATFORM: the platform to target, IOS, MAC_OS, TV_OS, VISION_OS
 
 ```
 
@@ -42,7 +42,7 @@ export PRIVATE_KEY=appstore connect api private key
 export APP_ID=app id
 export WHATS_NEW="Your update text, max 4000 chars"
 export BUILD_NUMBER= your build number
-export PLATFORM= ios, visionos or macos
+export PLATFORM= IOS, MAC_OS, TV_OS, VISION_OS
 python3 ./main.py
 ```
 
