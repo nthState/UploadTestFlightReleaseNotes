@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Upload Release Notes to TestFlight
-        uses: nthState/UploadTestFlightReleaseNotes@v2.0.0
+        uses: nthState/UploadTestFlightReleaseNotes@v2.0.1
         with:
           ISSUER_ID: ${{ secrets.APPCONNECT_API_ISSUER }}
           KEY_ID: ${{ secrets.APPCONNECT_API_KEY_ID }}
