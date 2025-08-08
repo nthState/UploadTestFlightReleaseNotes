@@ -20,6 +20,9 @@ inputs:
   BUILD_NUMBER:
     description: 'The build number to target'
     required: true
+  PLATFORM:
+    description: 'The platform to target, IOS, MAC_OS, TV_OS, VISION_OS'
+    required: false
 
 runs:
   using: 'composite'
@@ -36,6 +39,7 @@ runs:
         APP_ID: ${{ inputs.APP_ID }}
         WHATS_NEW: ${{ inputs.WHATS_NEW }}
         BUILD_NUMBER: ${{ inputs.BUILD_NUMBER }}
+        PLATFORM: ${{ inputs.PLATFORM }}
       run: |
         mkdir -p api_venv
         cd api_venv

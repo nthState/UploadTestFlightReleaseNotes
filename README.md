@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Upload Release Notes to TestFlight
-        uses: nthState/UploadTestFlightReleaseNotes@v2.0.0
+        uses: nthState/UploadTestFlightReleaseNotes@v2.0.1
         with:
           ISSUER_ID: ${{ secrets.APPCONNECT_API_ISSUER }}
           KEY_ID: ${{ secrets.APPCONNECT_API_KEY_ID }}
@@ -29,6 +29,7 @@ jobs:
           APP_ID: id of the app
           WHATS_NEW: "detail item that has changed"
           BUILD_NUMBER: the build number you want to change
+          PLATFORM: the platform to target, IOS, MAC_OS, TV_OS, VISION_OS
 
 ```
 
@@ -41,6 +42,7 @@ export PRIVATE_KEY=appstore connect api private key
 export APP_ID=app id
 export WHATS_NEW="Your update text, max 4000 chars"
 export BUILD_NUMBER= your build number
+export PLATFORM= IOS, MAC_OS, TV_OS, VISION_OS
 python3 ./main.py
 ```
 

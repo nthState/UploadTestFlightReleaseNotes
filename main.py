@@ -26,7 +26,7 @@ class UploadTestFlightReleaseNotes:
 		
 		return encoded_token
 		
-	def uploadNotes(self, app_id, token, whats_new, build_number):		
+	def uploadNotes(self, app_id, token, whats_new, build_number, platform):		
 		# Create Header
 		HEAD = {
 		   'Authorization': 'Bearer ' + token
@@ -37,28 +37,40 @@ class UploadTestFlightReleaseNotes:
 		
 		# Find builds
 		versionId = ""
-		while versionId == "":
+		versionIdCounter = 0
+		while versionId == "" and versionIdCounter < 100:
 		
 			print("---Finding Build---")
-			URL = BASE_URL + 'builds?filter[app]=' + app_id + '&filter[version]=' + build_number
+			URL = BASE_URL + 'builds?filter[app]=' + app_id + '&filter[version]=' + build_number + '&filter[preReleaseVersion.platform]=' + platform
 			r = requests.get(URL, params={}, headers=HEAD)
 			try:
-				versionId = r.json()['data'][0]['id']
-			except:
+				data = r.json()['data']
+				
+				if len(data) > 0:
+					versionId = data[0]['id']
+					print(f"found versionId: {versionId}")
+					
+			except Exception as e:
+				print(f"Error: {e}")
 				time.sleep(60) #wait for 60 seconds
+				
+			versionIdCounter += 1
 		
 		# Find localizations
 		localizationId = ""
-		while localizationId == "":
+		localizationIdCounter = 0
+		while localizationId == "" and localizationIdCounter < 100:
 		
 			print("---Finding Localizations---")
 			URL = BASE_URL + 'builds/' + versionId + '/betaBuildLocalizations'
 			r = requests.get(URL, params={}, headers=HEAD)
 			try:
 				localizationId = r.json()['data'][0]['id']
-			except:
+			except Exception as e:
+				print(f"Error: {e}")
 				time.sleep(60) #wait for 60 seconds
-		
+				
+			localizationIdCounter += 1
 		
 		print("---Update What's New---")
 		URL = BASE_URL + 'betaBuildLocalizations/' + localizationId
@@ -85,11 +97,13 @@ def main():
 	whats_new = os.getenv('WHATS_NEW')
 	build_number = os.getenv('BUILD_NUMBER')
 	
+	platform = os.getenv('PLATFORM', 'IOS')
+	
 	print(f"Starting for build: {build_number}")
 
 	service = UploadTestFlightReleaseNotes()
 	token = service.generateToken(issuer_id, key_id, private_key)
-	reason = service.uploadNotes(app_id, token, whats_new, build_number)
+	reason = service.uploadNotes(app_id, token, whats_new, build_number, platform)
 	
 	print(reason)
 
