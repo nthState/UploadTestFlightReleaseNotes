@@ -26,7 +26,25 @@ class UploadTestFlightReleaseNotes:
 		
 		return encoded_token
 		
-	def uploadNotes(self, app_id, token, whats_new, build_number):		
+	def filter_builds_for_platform(self, build):
+		#print(f"Check {self.platform} for {build}")
+		computedMinMacOsVersion = build['attributes']['computedMinMacOsVersion']
+		minOsVersion = build['attributes']['minOsVersion']
+		computedMinVisionOsVersion = build['attributes']['computedMinVisionOsVersion']
+		# print(f"computedMinMacOsVersion: {computedMinMacOsVersion}")
+# 		print(f"minOsVersion: {minOsVersion}")
+# 		print(f"computedMinVisionOsVersion: {computedMinVisionOsVersion}")
+# 		print(f"self.platform: {self.platform}")
+		if self.platform == 'visionos' and computedMinVisionOsVersion == None:
+			#print("visionos")
+			return True
+		if self.platform == 'ios' and computedMinVisionOsVersion != None:
+			#print("ios")
+			return True
+
+		return False
+		
+	def uploadNotes(self, app_id, token, whats_new, build_number, platform):		
 		# Create Header
 		HEAD = {
 		   'Authorization': 'Bearer ' + token
@@ -43,8 +61,18 @@ class UploadTestFlightReleaseNotes:
 			URL = BASE_URL + 'builds?filter[app]=' + app_id + '&filter[version]=' + build_number
 			r = requests.get(URL, params={}, headers=HEAD)
 			try:
-				versionId = r.json()['data'][0]['id']
-			except:
+				
+				data = r.json()['data']
+				#print(f"data len: {len(data)}")
+				data = list(filter(self.filter_builds_for_platform, data))
+				#print(f"data len filtered: {len(data)}")
+				
+				versionId = data[0]['id']
+					
+				print(f"found versionId: {versionId}")
+					
+			except Exception as e:
+				print(f"Error: {e}")
 				time.sleep(60) #wait for 60 seconds
 		
 		# Find localizations
@@ -56,7 +84,8 @@ class UploadTestFlightReleaseNotes:
 			r = requests.get(URL, params={}, headers=HEAD)
 			try:
 				localizationId = r.json()['data'][0]['id']
-			except:
+			except Exception as e:
+				print(f"Error: {e}")
 				time.sleep(60) #wait for 60 seconds
 		
 		
@@ -85,11 +114,14 @@ def main():
 	whats_new = os.getenv('WHATS_NEW')
 	build_number = os.getenv('BUILD_NUMBER')
 	
+	platform = os.getenv('PLATFORM', 'ios')
+	
 	print(f"Starting for build: {build_number}")
 
 	service = UploadTestFlightReleaseNotes()
+	service.platform = platform
 	token = service.generateToken(issuer_id, key_id, private_key)
-	reason = service.uploadNotes(app_id, token, whats_new, build_number)
+	reason = service.uploadNotes(app_id, token, whats_new, build_number, platform)
 	
 	print(reason)
 
