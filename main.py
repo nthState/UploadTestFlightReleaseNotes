@@ -26,65 +26,78 @@ class UploadTestFlightReleaseNotes:
 		
 		return encoded_token
 		
-	def uploadNotes(self, app_id, token, whats_new, build_number, platform):		
-		# Create Header
-		HEAD = {
-		   'Authorization': 'Bearer ' + token
-		}
-		
-		# URLS
+	def uploadNotes(self, app_id, token, whats_new, build_number, platform):
+		HEAD = {'Authorization': f'Bearer {token}'}
 		BASE_URL = 'https://api.appstoreconnect.apple.com/v1/'
 		
-		# Find builds
-		versionId = ""
-		versionIdCounter = 0
-		while versionId == "" and versionIdCounter < 100:
+		# --- Find build ---
+		versionId = None
+		for attempt in range(10):  # 10 tries max, not 100
+			print(f"---Finding Build (Attempt {attempt+1})---")
+			URL = f"{BASE_URL}builds?filter[app]={app_id}&filter[version]={build_number}&filter[preReleaseVersion.platform]={platform}"
+			r = requests.get(URL, headers=HEAD)
+			
+			if not r.ok:
+				print(f"Error: {r.status_code} {r.reason}")
+				if r.status_code == 404:
+					break  # stop early on invalid request
+				time.sleep(10)
+				continue
+			
+			data = r.json().get('data', [])
+			if data:
+				versionId = data[0]['id']
+				print(f"Found versionId: {versionId}")
+				break
+			
+			print("Build not found yet, retrying...")
+			time.sleep(10)
 		
-			print("---Finding Build---")
-			URL = BASE_URL + 'builds?filter[app]=' + app_id + '&filter[version]=' + build_number + '&filter[preReleaseVersion.platform]=' + platform
-			r = requests.get(URL, params={}, headers=HEAD)
-			try:
-				data = r.json()['data']
-				
-				if len(data) > 0:
-					versionId = data[0]['id']
-					print(f"found versionId: {versionId}")
-					
-			except Exception as e:
-				print(f"Error: {e}")
-				time.sleep(60) #wait for 60 seconds
-				
-			versionIdCounter += 1
+		if not versionId:
+			raise RuntimeError("Failed to find versionId after 10 attempts.")
+	
+		# --- Find localizations ---
+		localizationId = None
+		for attempt in range(10):
+			print(f"---Finding Localization (Attempt {attempt+1})---")
+			URL = f"{BASE_URL}builds/{versionId}/betaBuildLocalizations"
+			r = requests.get(URL, headers=HEAD)
+			
+			if not r.ok:
+				print(f"Error: {r.status_code} {r.reason}")
+				time.sleep(10)
+				continue
+			
+			data = r.json().get('data', [])
+			if data:
+				localizationId = data[0]['id']
+				print(f"Found localizationId: {localizationId}")
+				break
+			
+			print("No localization found yet, retrying...")
+			time.sleep(10)
 		
-		# Find localizations
-		localizationId = ""
-		localizationIdCounter = 0
-		while localizationId == "" and localizationIdCounter < 100:
-		
-			print("---Finding Localizations---")
-			URL = BASE_URL + 'builds/' + versionId + '/betaBuildLocalizations'
-			r = requests.get(URL, params={}, headers=HEAD)
-			try:
-				localizationId = r.json()['data'][0]['id']
-			except Exception as e:
-				print(f"Error: {e}")
-				time.sleep(60) #wait for 60 seconds
-				
-			localizationIdCounter += 1
-		
-		print("---Update What's New---")
-		URL = BASE_URL + 'betaBuildLocalizations/' + localizationId
-		data = {
+		if not localizationId:
+			raise RuntimeError("Failed to find localizationId after 10 attempts.")
+	
+		# --- Update What's New ---
+		print("---Updating What's New---")
+		URL = f"{BASE_URL}betaBuildLocalizations/{localizationId}"
+		payload = {
 			"data": {
 				"id": localizationId,
 				"type": "betaBuildLocalizations",
-				"attributes": {
-				"whatsNew": whats_new[:4000] #4000 char limit
-				}
+				"attributes": {"whatsNew": whats_new[:4000]},
 			}
 		}
-		result = requests.patch(URL, json=data, headers=HEAD)
-		return result.reason
+		
+		r = requests.patch(URL, json=payload, headers=HEAD)
+		
+		if not r.ok:
+			raise RuntimeError(f"Failed to update What's New: {r.status_code} {r.text}")
+		
+		print("Successfully updated What's New.")
+		return r.reason
 	
 
 def main():
