@@ -30,6 +30,7 @@ jobs:
           WHATS_NEW: "detail item that has changed"
           BUILD_NUMBER: the build number you want to change
           PLATFORM: the platform to target, IOS, MAC_OS, TV_OS, VISION_OS
+          ATTEMPTS: The number of tries before failing
 
 ```
 
@@ -43,6 +44,7 @@ export APP_ID=app id
 export WHATS_NEW="Your update text, max 4000 chars"
 export BUILD_NUMBER= your build number
 export PLATFORM= IOS, MAC_OS, TV_OS, VISION_OS
+export ATTEMPTS= 10
 python3 ./main.py
 ```
 
