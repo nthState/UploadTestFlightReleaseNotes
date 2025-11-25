@@ -23,6 +23,10 @@ inputs:
   PLATFORM:
     description: 'The platform to target, IOS, MAC_OS, TV_OS, VISION_OS'
     required: false
+  ATTEMPTS:
+    description: 'Number of times to try and find the build and set text before exiting'
+    required: false
+    default: "10"
 
 runs:
   using: 'composite'
@@ -40,6 +44,7 @@ runs:
         WHATS_NEW: ${{ inputs.WHATS_NEW }}
         BUILD_NUMBER: ${{ inputs.BUILD_NUMBER }}
         PLATFORM: ${{ inputs.PLATFORM }}
+        ATTEMPTS: ${{ inputs.ATTEMPTS }}
       run: |
         mkdir -p api_venv
         cd api_venv

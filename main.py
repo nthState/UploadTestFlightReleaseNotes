@@ -26,13 +26,13 @@ class UploadTestFlightReleaseNotes:
 		
 		return encoded_token
 		
-	def uploadNotes(self, app_id, token, whats_new, build_number, platform):
+	def uploadNotes(self, app_id, token, whats_new, build_number, platform, attempts):
 		HEAD = {'Authorization': f'Bearer {token}'}
 		BASE_URL = 'https://api.appstoreconnect.apple.com/v1/'
 		
 		# --- Find build ---
 		versionId = None
-		for attempt in range(10):  # 10 tries max, not 100
+		for attempt in range(attempts):
 			print(f"---Finding Build (Attempt {attempt+1})---")
 			URL = f"{BASE_URL}builds?filter[app]={app_id}&filter[version]={build_number}&filter[preReleaseVersion.platform]={platform}"
 			r = requests.get(URL, headers=HEAD)
@@ -58,7 +58,7 @@ class UploadTestFlightReleaseNotes:
 	
 		# --- Find localizations ---
 		localizationId = None
-		for attempt in range(10):
+		for attempt in range(attempts):
 			print(f"---Finding Localization (Attempt {attempt+1})---")
 			URL = f"{BASE_URL}builds/{versionId}/betaBuildLocalizations"
 			r = requests.get(URL, headers=HEAD)
@@ -112,11 +112,13 @@ def main():
 	
 	platform = os.getenv('PLATFORM', 'IOS')
 	
+	attempts = int(os.getenv('ATTEMPTS', '10'))
+	
 	print(f"Starting for build: {build_number}")
 
 	service = UploadTestFlightReleaseNotes()
 	token = service.generateToken(issuer_id, key_id, private_key)
-	reason = service.uploadNotes(app_id, token, whats_new, build_number, platform)
+	reason = service.uploadNotes(app_id, token, whats_new, build_number, platform, attempts)
 	
 	print(reason)
 
